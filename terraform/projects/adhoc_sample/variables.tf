@@ -3,7 +3,7 @@ variable "account_name" {
 }
 
 variable "external_policies" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
