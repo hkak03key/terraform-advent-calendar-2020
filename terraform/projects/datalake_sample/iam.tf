@@ -37,27 +37,18 @@ resource "aws_iam_policy" "s3_read_bucket_iam_policies" {
 
 
 #=================================
-# system user
+# delegate
 #=================================
 #---------------------------------
-# iam user
-# notice: secretは手動作成
-resource "aws_iam_user" "system_user" {
-  name = "${local.resource_prefix}-system-user"
-}
-
-#---------------------------------
 # iam policy attachment
-resource "aws_iam_user_policy_attachment" "system_user" {
+resource "aws_iam_user_policy_attachment" "write_to_default_bucket" {
   for_each = {
     for p in flatten([
       aws_iam_policy.s3_full_bucket_iam_policies[aws_s3_bucket.default.bucket],
-      # tf 0.12.21: lookupで書こうとするとエラーになる
-      contains(keys(var.external_policies), "system_user") ? var.external_policies["system_user"] : []
     ]) :
     p.name => p.arn
   }
-  user       = aws_iam_user.system_user.name
+  user       = var.delegate_identities["write_to_default_bucket_iam_user"]
   policy_arn = each.value
 }
 

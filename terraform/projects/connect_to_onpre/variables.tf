@@ -7,9 +7,3 @@ variable "external_policies" {
   default = {}
 }
 
-variable "delegate_identities" {
-  type = object({
-    write_to_default_bucket_iam_user = string
-  })
-}
-
